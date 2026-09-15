@@ -1,0 +1,33 @@
+.fetch-card{background:#fff;border:1px solid #e4d6c5;box-shadow:0 14px 32px rgba(51,38,24,.08);padding:28px;display:grid;grid-template-columns:.42fr .58fr;gap:28px;border-top:5px solid var(--gold);margin-bottom:22px}.fetch-card h2{margin:3px 0;color:var(--navy);font-family:Georgia,serif;font-size:clamp(1.55rem,2.5vw,2.25rem)}.fetch-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:end}.primary-button,.secondary-button,.city-form button{border:0;border-radius:8px;padding:12px 15px;font-weight:800;cursor:pointer}.primary-button{background:var(--terra);color:#fff}.secondary-button{background:var(--navy);color:#fff}.secondary-button:disabled{opacity:.45;cursor:not-allowed}.city-form{grid-row:span 2}.city-form label{display:block;margin-bottom:6px;font-size:.78rem;font-weight:800;color:var(--navy)}.city-form div{display:flex}.city-form input{min-width:0;flex:1;padding:11px;border:1px solid #bfae99;border-radius:8px 0 0 8px;font:inherit}.city-form button{border-radius:0 8px 8px 0;background:var(--gold);color:var(--navy)}.data-preview{grid-column:1/-1;border-top:1px solid #e4d6c5;padding-top:18px}.preview-heading{display:flex;justify-content:space-between;align-items:center}.preview-heading h3{margin:0;color:var(--navy)}.preview-heading button{border:0;background:transparent;color:var(--terra);font-weight:800;cursor:pointer}.table-wrap{overflow:auto;margin-top:10px}table{border-collapse:collapse;width:100%;min-width:760px}th,td{padding:10px 12px;border-bottom:1px solid #e7ddd1;text-align:right}th:first-child,td:first-child{text-align:left}th{background:var(--ivory);color:var(--navy);font-size:.78rem}@media(max-width:800px){.fetch-card{grid-template-columns:1fr}.fetch-actions{grid-template-columns:1fr}.city-form{grid-row:auto}}
+
+/* Touch-first layout for students opening the dashboard from a QR code. */
+@media(max-width:600px){
+  html,body{max-width:100%;overflow-x:hidden}
+  body{font-size:16px}
+  .topbar{padding:12px 14px;gap:10px;align-items:flex-start}
+  .topbar .brand{font-size:1rem;line-height:1.15}
+  .topbar .meta{font-size:.72rem;text-align:right}
+  main{width:100%;padding:12px 10px 36px}
+  .hero{padding:22px 16px}
+  .hero h1{font-size:clamp(1.75rem,9vw,2.35rem);line-height:1.02}
+  .fetch-card{padding:18px 14px;gap:18px;border-radius:10px}
+  .fetch-actions{gap:10px}
+  .primary-button,.secondary-button,.city-form button,.city-form input{min-height:48px;font-size:1rem}
+  .primary-button,.secondary-button{width:100%}
+  .city-form div{display:grid;grid-template-columns:minmax(0,1fr) auto}
+  .city-form button{padding-inline:16px}
+  .preview-heading{align-items:flex-start;gap:12px}
+  .preview-heading button{min-height:44px;white-space:nowrap}
+  .table-wrap{margin-inline:-14px;padding-inline:14px;-webkit-overflow-scrolling:touch}
+  #map,.map{height:min(56vh,430px);min-height:340px}
+  .leaflet-control-zoom a{width:44px!important;height:44px!important;line-height:44px!important;font-size:24px!important}
+  .cluster-strip,.model-grid,.forecast-grid{grid-template-columns:1fr!important}
+  .snapshot-grid,.metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .snapshot-grid>*:last-child,.metric-grid>*:last-child{grid-column:1/-1}
+  .tabs{position:sticky;top:0;z-index:500;display:flex;overflow-x:auto;gap:6px;padding:8px 0;background:var(--cream);-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tabs button{flex:0 0 auto;min-height:46px;padding:10px 14px}
+  .panel,.model-card{padding:16px 13px}
+  canvas{max-width:100%!important}
+  .chart-wrap{min-height:360px}
+}
