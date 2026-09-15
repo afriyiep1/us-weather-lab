@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="Live U.S. weather analysis for September 17, 2026 at 7 PM local time."
+    />
+    <title>U.S. Weather Lab · September 17 at 7 PM</title>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23152A3A'/%3E%3Ccircle cx='24' cy='23' r='10' fill='%23C79A4A'/%3E%3Cpath d='M14 44c2-9 18-10 22-2 8-4 15 1 15 8H14z' fill='%23F6EBDD'/%3E%3C/svg%3E"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">DSAC · LIVE WEATHER DATA</p>
+        <h1>U.S. Weather Lab</h1>
+        <p class="target">Target: September 17, 2026 at 7:00 PM local time</p>
+      </div>
+      <label class="city-picker"
+        >Detailed city analysis<select
+          id="citySelect"
+          aria-label="Choose a U.S. city"
+        ></select
+      ></label>
+    </header>
+    <div id="status" class="status" role="status">
+      Ready to retrieve the latest forecast.
+    </div>
+    <main>
+      <section class="fetch-card">
+        <div>
+          <p class="kicker">BEGIN WITH THE DATA</p>
+          <h2>Fetch, add a city, and inspect the rows</h2>
+          <p>
+            The national request retrieves the newest September 17 forecast. You
+            can also add any U.S. city before exploring the models.
+          </p>
+        </div>
+        <div class="fetch-actions">
+          <button id="fetchButton" class="primary-button">
+            Fetch latest U.S. data
+          </button>
+          <form id="cityForm" class="city-form">
+            <label for="cityInput">Add a U.S. city</label>
+            <div>
+              <input
+                id="cityInput"
+                type="text"
+                placeholder="e.g., Charlottesville, VA"
+                autocomplete="off"
+              /><button type="submit">Add city</button>
+            </div>
+          </form>
+          <button id="previewButton" class="secondary-button" disabled>
+            Preview selected-city data
+          </button>
+        </div>
+        <div id="dataPreview" class="data-preview" hidden>
+          <div class="preview-heading">
+            <h3 id="previewTitle">Data preview</h3>
+            <button id="closePreview" aria-label="Close data preview">
+              Close
+            </button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Local time</th>
+                  <th>Temp. °F</th>
+                  <th>Humidity</th>
+                  <th>Rain probability</th>
+                  <th>Cloud cover</th>
+                  <th>Wind mph</th>
+                </tr>
+              </thead>
+              <tbody id="previewRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+      <section class="map-card">
+        <div class="section-heading">
+          <div>
+            <p class="kicker">LIVE NATIONAL VIEW</p>
+            <h2>Weather regimes across the United States</h2>
+          </div>
+          <p id="updatedAt" class="updated"></p>
+        </div>
+        <div
+          id="map"
+          class="map"
+          aria-label="Satellite map of clustered U.S. cities"
+        ></div>
+        <div id="clusterLegend" class="cluster-strip"></div>
+        <p class="map-note">
+          Clusters use forecast temperature, humidity, wind, cloud cover, and
+          rain probability at 7 PM local time. Marker colors show the fitted
+          groups.
+        </p>
+      </section>
+      <section class="snapshot" id="snapshot"></section>
+      <nav class="tabs" aria-label="Model views">
+        <button class="tab active" data-tab="rain">Rain probability</button
+        ><button class="tab" data-tab="temperature">Temperature models</button
+        ><button class="tab" data-tab="cluster">Cluster profile</button>
+      </nav>
+      <section class="model-card active" id="rainPanel">
+        <div class="model-copy">
+          <p class="model-number">LOGISTIC REGRESSION</p>
+          <h2>Will it rain at 7 PM?</h2>
+          <div id="rainGaugeValue" class="hero-number">—</div>
+          <p id="rainInterpretation">
+            Calculating from the latest forecast conditions…
+          </p>
+          <div class="method">
+            The teaching model uses temperature, humidity, wind speed, and cloud
+            cover. It was trained on 2026 hourly observations from U.S. cities.
+          </div>
+        </div>
+        <div>
+          <div id="rainGauge" class="chart"></div>
+          <div id="rainDrivers" class="drivers"></div>
+        </div>
+      </section>
+      <section class="model-card" id="temperaturePanel">
+        <div class="model-copy">
+          <p class="model-number">TIME SERIES</p>
+          <h2>Temperature at 7 PM</h2>
+          <p>
+            Three models start from the most recent available hourly temperature
+            and forecast recursively to September 17 at 7 PM.
+          </p>
+          <div id="modelScores" class="score-list"></div>
+          <div class="method">
+            Naive repeats the latest value. AR(5) uses five temperature lags.
+            Simple exponential smoothing uses α selected from recent data.
+          </div>
+        </div>
+        <div id="temperatureChart" class="chart tall"></div>
+      </section>
+      <section class="model-card" id="clusterPanel">
+        <div class="model-copy">
+          <p class="model-number">K-MEANS</p>
+          <h2>Which cities share similar conditions?</h2>
+          <p id="selectedClusterText"></p>
+          <div class="method">
+            K-means standardizes five forecast variables before forming four
+            clusters. Labels describe the fitted centers and update with the
+            live forecast.
+          </div>
+        </div>
+        <div id="clusterChart" class="chart tall"></div>
+      </section>
+      <section class="questions">
+        <div>
+          <p class="kicker">STUDENT INVESTIGATION</p>
+          <h2>Use the dashboard as evidence</h2>
+          <p>
+            Work with a partner. Support one answer using at least two cities or
+            two models.
+          </p>
+        </div>
+        <ol>
+          <li>
+            Which parts of the country share a weather regime at 7 PM? Does
+            geography fully explain the clusters?
+          </li>
+          <li>
+            Where does the logistic model assign the highest and lowest rain
+            probabilities? Which inputs appear responsible?
+          </li>
+          <li>
+            How different are the naive, AR(5), and exponential-smoothing
+            predictions? Why might they converge or disagree?
+          </li>
+          <li>
+            Which prediction would you trust least, and what additional evidence
+            would you request?
+          </li>
+        </ol>
+      </section>
+    </main>
+    <footer>
+      Live forecast source: Open-Meteo · Satellite imagery: Esri World Imagery ·
+      Teaching models, not operational forecasts
+    </footer>
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      crossorigin=""
+    ></script>
+    <script src="https://cdn.plot.ly/plotly-3.1.0.min.js" charset="utf-8"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
